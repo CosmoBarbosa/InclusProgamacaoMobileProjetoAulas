@@ -1,8 +1,9 @@
 import { View, Text, TextInput, Button, StyleSheet, Image, TouchableOpacity} from 'react-native';
-
+import { useNavigation } from '@react-navigation/native';
 import Logo from '../../icons/inclus.png';
 
-export default function App() {
+export default function Login() {
+  const navigation = useNavigation();
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Login</Text>
@@ -21,7 +22,7 @@ export default function App() {
           secureTextEntry={true}
         />
       </View>
-      <TouchableOpacity onPress={() => alert('Login efetuado!!!')} style={styles.buttom}>
+      <TouchableOpacity onPress={() => navigation.navigate("Home")} style={styles.buttom}>
         <Text style={styles.textButton}>Entrar</Text>
       </TouchableOpacity>
     </View>
