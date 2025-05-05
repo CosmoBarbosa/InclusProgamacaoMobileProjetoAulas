@@ -14,7 +14,7 @@ export default function SplashScreen() {
   return (
     <View style={styles.container}>
       <Image style={styles.logo} source={Logo} />
-      <ActivityIndicator size="large" color="#6200ee" style={styles.spinner} />
+      <ActivityIndicator size="large" color="#fff" style={styles.spinner} />
       <Text style={styles.loadingText}>Carregando...</Text>
     </View>
   );
