@@ -9,7 +9,7 @@ export default function SplashScreen() {
     setTimeout(()=>{
       navigation.navigate("Login")
     },3000)
-  })
+  }, [])
  
   return (
     <View style={styles.container}>
