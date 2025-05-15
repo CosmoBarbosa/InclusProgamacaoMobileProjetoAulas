@@ -1,16 +1,22 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { View, Image, StyleSheet, Text, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Logo from '../../icons/inclus.png';
+import {useCallback} from "react"
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function SplashScreen() {
   const navigation = useNavigation();
-  useEffect(()=>{
-    setTimeout(()=>{
-      navigation.navigate("Login")
-    },3000)
-  }, [])
- 
+
+  useFocusEffect(
+    useCallback(() => {
+        setTimeout(() => {
+          navigation.navigate("Login")
+        }, 3000)
+    }, [])
+  );
+
+
   return (
     <View style={styles.container}>
       <Image style={styles.logo} source={Logo} />
@@ -31,7 +37,7 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     marginBottom: 20,
-    borderRadius:100
+    borderRadius: 100
   },
   spinner: {
     marginTop: 20,
