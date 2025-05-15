@@ -2,20 +2,20 @@ import {
 	View,
 	Text,
 	TextInput,
-	Button,
 	StyleSheet,
 	Image,
 	TouchableOpacity,
-	Keyboard,
+	KeyboardAvoidingView,
+	Platform,
+	ScrollView,
 	BackHandler,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import Logo from "../../icons/inclus.png";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 
 export default function Login() {
 	const navigation = useNavigation();
-	const [margin, setMargin] = useState("50%");
 
 	useEffect(() => {
 		const backHandler = BackHandler.addEventListener("hardwareBackPress", () =>
@@ -24,66 +24,63 @@ export default function Login() {
 		return () => backHandler.remove();
 	}, []);
 
-	useEffect(() => {
-		const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
-			setMargin("10%");
-		});
-		const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
-			setMargin("50%");
-		});
-		return () => {
-			showSubscription.remove();
-			hideSubscription.remove();
-		};
-	}, []);
-
 	return (
-		<View style={styles.container}>
-			<Text
-				style={{
-					fontSize: 32,
-					fontWeight: "500",
-					marginBottom: 30,
-					color: "#333",
-					textAlign: "center",
-					marginTop: margin,
-				}}
+		<KeyboardAvoidingView
+			style={{ flex: 1 }}
+			behavior={Platform.OS === "ios" ? "padding" : "height"}
+		>
+			<ScrollView
+				contentContainerStyle={styles.scrollContainer}
+				keyboardShouldPersistTaps="handled"
 			>
-				Login
-			</Text>
-			<Image style={styles.logo} source={Logo} />
-			<View style={styles.formContainer}>
-				<TextInput
-					style={styles.input}
-					placeholder="Email"
-					placeholderTextColor="#888"
-					keyboardType="email-address"
-				/>
-				<TextInput
-					style={styles.input}
-					placeholder="Senha"
-					placeholderTextColor="#888"
-					secureTextEntry={true}
-				/>
-			</View>
-			<TouchableOpacity
-				onPress={() => navigation.navigate("Home")}
-				style={styles.buttom}
-			>
-				<Text style={styles.textButton}>Entrar</Text>
-			</TouchableOpacity>
-		</View>
+				<View style={styles.container}>
+					<Text style={styles.title}>Login</Text>
+					<Image style={styles.logo} source={Logo} />
+					<View style={styles.formContainer}>
+						<TextInput
+							style={styles.input}
+							placeholder="Email"
+							placeholderTextColor="#888"
+							keyboardType="email-address"
+						/>
+						<TextInput
+							style={styles.input}
+							placeholder="Senha"
+							placeholderTextColor="#888"
+							secureTextEntry={true}
+						/>
+					</View>
+					<TouchableOpacity
+						onPress={() => navigation.navigate("Home")}
+						style={styles.buttom}
+					>
+						<Text style={styles.textButton}>Entrar</Text>
+					</TouchableOpacity>
+				</View>
+			</ScrollView>
+		</KeyboardAvoidingView>
 	);
 }
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
+	scrollContainer: {
+		flexGrow: 1,
+		justifyContent: "center",
+		alignItems: "center",
 		padding: 20,
 		backgroundColor: "#f5f5f5",
+	},
+	container: {
+		width: "100%",
 		alignItems: "center",
 	},
-
+	title: {
+		fontSize: 32,
+		fontWeight: "500",
+		marginBottom: 30,
+		color: "#333",
+		textAlign: "center",
+	},
 	logo: {
 		width: 100,
 		height: 100,
@@ -92,7 +89,6 @@ const styles = StyleSheet.create({
 	},
 	formContainer: {
 		width: "100%",
-		paddingHorizontal: 20,
 	},
 	input: {
 		height: 48,
@@ -105,11 +101,12 @@ const styles = StyleSheet.create({
 		backgroundColor: "#fff",
 	},
 	buttom: {
-		width: "90%",
+		width: "100%",
 		borderRadius: 10,
 		height: 40,
 		backgroundColor: "blue",
 		justifyContent: "center",
+		marginTop: 10,
 	},
 	textButton: {
 		color: "#fff",
