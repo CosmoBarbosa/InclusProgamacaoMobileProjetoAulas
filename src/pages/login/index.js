@@ -12,7 +12,9 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import Logo from "../../icons/inclus.png";
-import { useEffect } from "react";
+import { use, useEffect, useState } from "react";
+import * as SecureStore from 'expo-secure-store';
+import axios from "axios";
 
 export default function Login() {
 	const navigation = useNavigation();
@@ -23,6 +25,47 @@ export default function Login() {
 		);
 		return () => backHandler.remove();
 	}, []);
+
+	const [user, setUser] = useState("");
+	const [passWord, setPassWord] = useState("");
+
+
+	async function setToken(value) {
+		try {
+			await SecureStore.setItemAsync("token", value)
+			return true;
+		}
+		catch (error) {
+			throw new Error("Erro ao salvar o token: " + error.message);
+		}
+
+	}
+
+	async function autenticate() {
+		try {
+			let res = await axios.post("http://192.168.100.240:3000/login", {
+				username: user,
+				password: passWord,
+			});
+
+			console.log("Resposta do servidor:", res.data);
+			if (res.data.token) {
+				let saveToken = await setToken(res.data.token);
+				if(saveToken){
+
+					navigation.navigate("Home");
+				}
+				return;
+			}
+			else {
+				alert("Dados inválidos. Por favor, tente novamente.");
+			}
+			return;
+		} catch (error) {
+			console.error("Erro:", error);
+		}
+	}
+
 
 	return (
 		<KeyboardAvoidingView
@@ -42,16 +85,20 @@ export default function Login() {
 							placeholder="Email"
 							placeholderTextColor="#888"
 							keyboardType="email-address"
+							value={user}
+							onChangeText={setUser}
 						/>
 						<TextInput
 							style={styles.input}
 							placeholder="Senha"
 							placeholderTextColor="#888"
 							secureTextEntry={true}
+							value={passWord}
+							onChangeText={setPassWord}
 						/>
 					</View>
 					<TouchableOpacity
-						onPress={() => navigation.navigate("Home")}
+						onPress={() => autenticate()}
 						style={styles.buttom}
 					>
 						<Text style={styles.textButton}>Entrar</Text>
