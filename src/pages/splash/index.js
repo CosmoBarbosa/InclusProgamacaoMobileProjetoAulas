@@ -10,7 +10,6 @@ import * as SecureStore from 'expo-secure-store';
 export default function SplashScreen() {
 
   const navigation = useNavigation();
-
   async function getToken() {
     let result = await SecureStore.getItemAsync("token");
     if (result) {
@@ -21,7 +20,6 @@ export default function SplashScreen() {
   }
 
   async function redirectTo() {
-
     const token = await getToken();
     console.log("Token encontrado:", token);
     if (token) {

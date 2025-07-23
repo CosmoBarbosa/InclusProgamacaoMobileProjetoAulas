@@ -26,9 +26,25 @@ export default function Login() {
 		return () => backHandler.remove();
 	}, []);
 
-	const [user, setUser] = useState("");
+	const [email, setEmail] = useState("");
 	const [passWord, setPassWord] = useState("");
 
+	function validarInformacoes() {
+		if (email.trim() === "" || passWord.trim() === "") {
+			alert("Por favor, preencha todos os campos!");
+			return false;
+		}
+		//cosmo@gmail.com
+		if (!/\S+@\S+\.\S+/.test(email)) {
+			alert("Por favor, insira um email válido!");
+			return false;
+		}
+		if (passWord.length < 6) {
+			alert("A senha deve ter pelo menos 6 caracteres.");
+			return false;
+		}
+		return true;
+	}
 
 	async function setToken(value) {
 		try {
@@ -43,8 +59,11 @@ export default function Login() {
 
 	async function autenticate() {
 		try {
+			if (!validarInformacoes()) {
+				return;
+			}
 			let res = await axios.post("http://192.168.100.240:3000/login", {
-				username: user,
+				email: email.toLocaleLowerCase(),
 				password: passWord,
 			});
 
@@ -52,7 +71,6 @@ export default function Login() {
 			if (res.data.token) {
 				let saveToken = await setToken(res.data.token);
 				if(saveToken){
-
 					navigation.navigate("Home");
 				}
 				return;
@@ -85,8 +103,8 @@ export default function Login() {
 							placeholder="Email"
 							placeholderTextColor="#888"
 							keyboardType="email-address"
-							value={user}
-							onChangeText={setUser}
+							value={email}
+							onChangeText={setEmail}
 						/>
 						<TextInput
 							style={styles.input}
