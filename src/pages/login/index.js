@@ -11,10 +11,10 @@ import {
 	BackHandler,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import Logo from "../../icons/inclus.png";
+import Logo from "../../icon/logo.png";
 import { use, useEffect, useState } from "react";
 import * as SecureStore from 'expo-secure-store';
-import axios from "axios";
+import api from "../../api/api";
 
 export default function Login() {
 	const navigation = useNavigation();
@@ -29,22 +29,6 @@ export default function Login() {
 	const [email, setEmail] = useState("");
 	const [passWord, setPassWord] = useState("");
 
-	function validarInformacoes() {
-		if (email.trim() === "" || passWord.trim() === "") {
-			alert("Por favor, preencha todos os campos!");
-			return false;
-		}
-		//cosmo@gmail.com
-		if (!/\S+@\S+\.\S+/.test(email)) {
-			alert("Por favor, insira um email válido!");
-			return false;
-		}
-		if (passWord.length < 6) {
-			alert("A senha deve ter pelo menos 6 caracteres.");
-			return false;
-		}
-		return true;
-	}
 
 	async function setToken(value) {
 		try {
@@ -57,17 +41,32 @@ export default function Login() {
 
 	}
 
+	function validarInformacoes() {
+		if (email.trim() === "" || passWord.trim() === "") {
+			alert("Por favor, preencha todos os campos!");
+			return false;
+		}
+
+		if (!/\S+@\S+\.\S+/.test(email)) {
+			alert("Por favor, insira um email válido!");
+			return false;
+		}
+		if (passWord.length < 6) {
+			alert("A senha deve ter pelo menos 6 caracteres.");
+			return false;
+		}
+		return true;
+	}
+
 	async function autenticate() {
 		try {
 			if (!validarInformacoes()) {
 				return;
 			}
-			let res = await axios.post("http://192.168.100.240:3000/login", {
-				email: email.toLocaleLowerCase(),
-				password: passWord,
+			let res = await api.post("/login", {
+				email: email.trim(),
+				password: passWord.trim(),
 			});
-
-			console.log("Resposta do servidor:", res.data);
 			if (res.data.token) {
 				let saveToken = await setToken(res.data.token);
 				if(saveToken){
@@ -169,7 +168,7 @@ const styles = StyleSheet.create({
 		width: "100%",
 		borderRadius: 10,
 		height: 40,
-		backgroundColor: "blue",
+		backgroundColor: "orange",
 		justifyContent: "center",
 		marginTop: 10,
 	},
